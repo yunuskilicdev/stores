@@ -1,4 +1,4 @@
-# 🏪 Store Locator API
+# Store Locator API
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=yunuskilicdev_stores&metric=alert_status)](https://sonarcloud.io/dashboard?id=yunuskilicdev_stores)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=yunuskilicdev_stores&metric=coverage)](https://sonarcloud.io/dashboard?id=yunuskilicdev_stores)
@@ -7,7 +7,7 @@
 
 A production-ready Spring Boot REST API that finds the nearest stores to a given geographic location using the Haversine distance formula.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Architecture](#-architecture)
@@ -20,7 +20,7 @@ A production-ready Spring Boot REST API that finds the nearest stores to a given
 - [CI/CD](#-cicd)
 - [Performance](#-performance)
 
-## ✨ Features
+## Features
 
 - Nearest Store Search - Find the 5 closest stores to any location
 - Haversine Distance - Accurate geographic distance calculations
@@ -31,7 +31,12 @@ A production-ready Spring Boot REST API that finds the nearest stores to a given
 - Security - OWASP dependency scanning, SonarQube analysis
 - 95% Test Coverage** - Unit, integration, and parameterized tests
 
-## 🏗️ Architecture
+## Potential Improvements
+
+- Add authentication/authorization
+- Implement rate limiting
+
+##  Architecture
 
 ### Design Decisions
 
@@ -73,7 +78,7 @@ If scaling beyond this, consider a spatial capabilities like Redis.
 - **StoreService** - Finds nearest stores with caching
 - **StoreController** - REST endpoints
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Category | Technology |
 |----------|-----------|
@@ -132,7 +137,7 @@ This starts:
 - **Prometheus** - http://localhost:9090
 - **Grafana** - http://localhost:3000
 
-## 📚 API Documentation
+## API Documentation
 
 ### Interactive API Docs
 **Swagger UI**: http://localhost:8080/swagger-ui/index.html
@@ -180,7 +185,7 @@ curl "http://localhost:8080/api/v1/stores/nearest?latitude=52.3676&longitude=4.9
 - `400 Bad Request` - Invalid parameters
 - `500 Internal Server Error` - Server error
 
-## 📊 Monitoring
+## Monitoring
 
 ### Health Checks
 ```bash
@@ -206,7 +211,7 @@ Pre-configured dashboard showing:
 -  Success rate
 -  Memory usage
 
-## 🧪 Testing
+## Testing
 
 ### Run All Tests
 ```bash
@@ -219,7 +224,7 @@ Pre-configured dashboard showing:
 # View: target/site/jacoco/index.html
 ```
 
-## 🔒 Security
+## Security
 
 ### Dependency Scanning
 - **OWASP Dependency Check** in CI/CD
@@ -238,7 +243,7 @@ Pre-configured dashboard showing:
 
 ### Documentation
 
-## 🔄 CI/CD
+##  CI/CD
 
 ### GitHub Actions Workflow
 
