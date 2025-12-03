@@ -29,7 +29,7 @@ A production-ready Spring Boot REST API that finds the nearest stores to a given
 - Observability - Prometheus metrics, Grafana dashboards, health checks
 - API Documentation - Interactive Swagger/OpenAPI UI
 - Security - OWASP dependency scanning, SonarQube analysis
-- 95% Test Coverage** - Unit, integration, and parameterized tests
+- 95% Test Coverage - Unit, integration, and parameterized tests
 
 ## Potential Improvements
 
@@ -90,7 +90,7 @@ If scaling beyond this, consider a spatial capabilities like Redis.
 | **Monitoring** | Prometheus + Grafana |
 | **Caching** | Spring Cache (Caffeine) |
 | **Testing** | JUnit 5, REST Assured, AssertJ |
-| **Code Quality** | SonarQube Cloud, PMD |
+| **Code Quality** | SonarQube Cloud |
 | **Security** | OWASP Dependency Check |
 | **CI/CD** | GitHub Actions |
 | **Container** | Docker |
