@@ -43,7 +43,7 @@
         "gridPos": {"x": 0, "y": 8, "w": 6, "h": 4},
         "targets": [
           {
-            "expr": "store_search_requests_total{status=\"success\"}"
+            "expr": "store_search_requests_total{application=\"jumbo-store-api\",type=\"nearest\"}"
           }
         ]
       },
@@ -54,7 +54,7 @@
         "gridPos": {"x": 6, "y": 8, "w": 6, "h": 4},
         "targets": [
           {
-            "expr": "store_search_errors_total"
+            "expr": "store_search_errors_total{application=\"jumbo-store-api\",type=\"error\"}"
           }
         ]
       },
@@ -65,7 +65,7 @@
         "gridPos": {"x": 12, "y": 8, "w": 6, "h": 4},
         "targets": [
           {
-            "expr": "rate(cache_gets_total{result=\"hit\"}[5m]) / rate(cache_gets_total[5m]) * 100"
+            "expr": "rate(cache_gets_total{application=\"jumbo-store-api\",result=\"hit\"}[5m]) / rate(cache_gets_total{application=\"jumbo-store-api\"}[5m]) * 100"
           }
         ]
       },
@@ -88,7 +88,7 @@
         "gridPos": {"x": 0, "y": 12, "w": 12, "h": 8},
         "targets": [
           {
-            "expr": "rate(store_search_duration_seconds_sum[1m]) / rate(store_search_duration_seconds_count[1m])",
+            "expr": "rate(store_search_duration_seconds_sum{application=\"jumbo-store-api\"}[1m]) / rate(store_search_duration_seconds_count{application=\"jumbo-store-api\"}[1m])",
             "legendFormat": "Average Duration"
           }
         ]
@@ -102,17 +102,6 @@
           {
             "expr": "rate(http_server_requests_seconds_count{application=\"jumbo-store-api\"}[1m])",
             "legendFormat": "{{status}}"
-          }
-        ]
-      },
-      {
-        "id": 9,
-        "title": "Store Count",
-        "type": "stat",
-        "gridPos": {"x": 0, "y": 20, "w": 6, "h": 4},
-        "targets": [
-          {
-            "expr": "store_count"
           }
         ]
       },

@@ -15,7 +15,6 @@ import kilic.yunus.stores.model.dto.StoreWithDistance;
 import kilic.yunus.stores.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -94,26 +93,4 @@ public class StoreController {
 
         return ResponseEntity.ok(response);
     }
-
-    @Operation(
-            summary = "Get store statistics",
-            description = "Returns statistics about the store data")
-    @GetMapping("/stats")
-    public ResponseEntity<StoreStats> getStats() {
-        log.info("Getting store statistics");
-
-        int totalStores = storeService.getTotalStoreCount();
-
-        StoreStats stats = new StoreStats(totalStores);
-        return ResponseEntity.ok(stats);
-    }
-
-    /**
-     * Simple stats DTO
-     */
-    @Schema(description = "Store statistics")
-    public record StoreStats(
-            @Schema(description = "Total number of stores", example = "663") int totalStores) {
-    }
-
 }

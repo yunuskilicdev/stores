@@ -195,11 +195,6 @@ class StoreControllerIntegrationTest {
     }
 
     @Test
-    void shouldGetStoreStats() {
-        given().when().get("/stats").then().statusCode(200).body("totalStores", greaterThan(0));
-    }
-
-    @Test
     void shouldReturnBadRequestForNegativeLimit() {
         given()
                 .queryParam("latitude", 52.3676)

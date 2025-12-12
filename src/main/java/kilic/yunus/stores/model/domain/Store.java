@@ -1,5 +1,6 @@
 package kilic.yunus.stores.model.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotBlank;
@@ -123,6 +124,7 @@ public class Store implements Serializable {
      *
      * @return true if the store data is logically consistent
      */
+    @JsonIgnore
     public boolean isValid() {
         // Check time consistency
         return isTimeLogicValid();
@@ -225,6 +227,7 @@ public class Store implements Serializable {
      *
      * @return Location object with the store's coordinates, or null if coordinates are invalid
      */
+    @JsonIgnore
     public Location getLocation() {
         if (latitude == null || longitude == null) {
             return null;

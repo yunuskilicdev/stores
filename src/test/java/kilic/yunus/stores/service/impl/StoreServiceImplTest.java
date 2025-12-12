@@ -1,6 +1,8 @@
 package kilic.yunus.stores.service.impl;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import kilic.yunus.stores.exception.InvalidCoordinatesException;
 import kilic.yunus.stores.model.domain.Location;
@@ -35,13 +37,39 @@ class StoreServiceImplTest {
     private DistanceCalculator distanceCalculator;
 
     private MeterRegistry meterRegistry;
+    private Counter storeSearchCounter;
+    private Counter storeSearchErrorCounter;
+    private Timer storeSearchTimer;
 
     private StoreServiceImpl storeService;
 
     @BeforeEach
     void setUp() {
         meterRegistry = new SimpleMeterRegistry();
-        storeService = new StoreServiceImpl(storeRepository, distanceCalculator, meterRegistry);
+
+        // Create the metric beans
+        storeSearchCounter = Counter.builder("store.search.requests")
+                .description("Total number of store search requests")
+                .tag("type", "nearest")
+                .register(meterRegistry);
+
+        storeSearchErrorCounter = Counter.builder("store.search.errors")
+                .description("Total number of store search errors")
+                .tag("type", "error")
+                .register(meterRegistry);
+
+        storeSearchTimer = Timer.builder("store.search.duration")
+                .description("Time taken to search for nearest stores")
+                .tag("operation", "findNearest")
+                .register(meterRegistry);
+
+        storeService = new StoreServiceImpl(
+                storeRepository,
+                distanceCalculator,
+                meterRegistry,
+                storeSearchCounter,
+                storeSearchErrorCounter,
+                storeSearchTimer);
     }
 
     @Test
@@ -156,9 +184,7 @@ class StoreServiceImplTest {
 
         assertThat(exception.getMessage()).contains("Database connection failed");
 
-        // Verify error metric was incremented
-        assertThat(meterRegistry.counter("store.search.errors", "reason", "unknown").count())
-                .isEqualTo(1.0);
+        assertThat(storeSearchErrorCounter.count()).isEqualTo(1.0);
     }
 
     private Store createStore(String id, String name, Double latitude, Double longitude) {

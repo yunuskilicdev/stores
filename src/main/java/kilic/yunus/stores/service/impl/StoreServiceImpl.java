@@ -1,5 +1,6 @@
 package kilic.yunus.stores.service.impl;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import kilic.yunus.stores.exception.InvalidCoordinatesException;
@@ -9,8 +10,8 @@ import kilic.yunus.stores.model.dto.StoreWithDistance;
 import kilic.yunus.stores.repository.StoreRepository;
 import kilic.yunus.stores.service.DistanceCalculator;
 import kilic.yunus.stores.service.StoreService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +23,29 @@ import java.util.List;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
 
-    private static final String STORE_SEARCH_ERROR_METRIC = "store.search.errors";
-    private static final String METRIC_TAG = "reason";
     private final StoreRepository storeRepository;
     private final DistanceCalculator distanceCalculator;
     private final MeterRegistry meterRegistry;
+    private final Counter storeSearchCounter;
+    private final Counter storeSearchErrorCounter;
+    private final Timer storeSearchTimer;
+
+    public StoreServiceImpl(
+            StoreRepository storeRepository,
+            DistanceCalculator distanceCalculator,
+            MeterRegistry meterRegistry,
+            @Qualifier("storeSearchCounter") Counter storeSearchCounter,
+            @Qualifier("storeSearchErrorCounter") Counter storeSearchErrorCounter,
+            @Qualifier("storeSearchTimer") Timer storeSearchTimer) {
+        this.storeRepository = storeRepository;
+        this.distanceCalculator = distanceCalculator;
+        this.meterRegistry = meterRegistry;
+        this.storeSearchCounter = storeSearchCounter;
+        this.storeSearchErrorCounter = storeSearchErrorCounter;
+        this.storeSearchTimer = storeSearchTimer;
+    }
 
     @Override
     @Cacheable(
@@ -47,7 +63,7 @@ public class StoreServiceImpl implements StoreService {
 
             // Validate location
             if (!location.isValid()) {
-                meterRegistry.counter(STORE_SEARCH_ERROR_METRIC, METRIC_TAG, "invalid_coordinates").increment();
+                storeSearchErrorCounter.increment();
                 throw new InvalidCoordinatesException(
                         String.format(
                                 "Invalid coordinates: latitude=%.6f, longitude=%.6f",
@@ -57,7 +73,6 @@ public class StoreServiceImpl implements StoreService {
             List<Store> allStores = storeRepository.findAll();
             log.debug("Total stores loaded: {}", allStores.size());
 
-            meterRegistry.gauge("store.count", allStores.size());
 
             List<StoreWithDistance> storesWithDistances =
                     allStores.stream()
@@ -78,22 +93,19 @@ public class StoreServiceImpl implements StoreService {
 
             log.info("Found {} nearest stores", storesWithDistances.size());
 
-            meterRegistry.counter("store.search.requests", "status", "success").increment();
-            meterRegistry
-                    .counter("store.search.results", "count", String.valueOf(storesWithDistances.size()))
-                    .increment();
+            storeSearchCounter.increment();
 
             return storesWithDistances;
 
         } catch (InvalidCoordinatesException e) {
-            meterRegistry.counter(STORE_SEARCH_ERROR_METRIC, METRIC_TAG, "invalid_coordinates").increment();
+            storeSearchErrorCounter.increment();
             throw e;
         } catch (Exception e) {
-            meterRegistry.counter(STORE_SEARCH_ERROR_METRIC, METRIC_TAG, "unknown").increment();
+            storeSearchErrorCounter.increment();
             log.error("Error finding nearest stores", e);
             throw e;
         } finally {
-            sample.stop(meterRegistry.timer("store.search.duration", "operation", "findNearest"));
+            sample.stop(storeSearchTimer);
         }
     }
 

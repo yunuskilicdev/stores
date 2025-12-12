@@ -61,7 +61,7 @@ public class JsonStoreRepository implements StoreRepository {
 
             // Parse stores array
             List<Store> stores =
-                    objectMapper.convertValue(storesNode, new TypeReference<List<Store>>() {
+                    objectMapper.convertValue(storesNode, new TypeReference<>() {
                     });
 
             // Validate each store
